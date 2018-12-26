@@ -3,12 +3,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const history = require('connect-history-api-fallback')
 const convert = require('koa-connect')
 var path = require('path')
-
 // 使用 WEBPACK_SERVE 环境变量检测当前是否是在 webpack-server 启动的开发环境中
 const dev = Boolean(process.env.WEBPACK_SERVE)
 
-
 module.exports = {
+
 	/*
 	 webpack 执行模式
 	 development：开发环境，它会在配置文件中插入调试相关的选项，比如 moduleId 使用文件路径方便调试
@@ -35,7 +34,7 @@ module.exports = {
         path: resolve(__dirname, '../dist'),
 
         // 入口 js 的打包输出文件名
-        filename: 'js/[name].js',
+        filename: '[name].js',
         // chunkFilename: 'js/[name].bundle.js',
     },
 
@@ -97,12 +96,24 @@ module.exports = {
                     {
                         loader: 'url-loader',
                         options: {
-                            limit: 10000
+                            limit: 10000,
+                            name: 'img/[name].[hash:7].[ext]'
                         }
                     }
                 ]
             },
-            // { test:/\.less$/,use: ['style-loader', 'css-loader','less-loader']},
+            {
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        babelrc: false,
+                        presets: ['@babel/preset-env']
+                    }
+                }
+            },
+            { test:/\.less$/,use: ['style-loader', 'css-loader','less-loader']},
             { test:/\.scss$/,use: ['style-loader', 'css-loader','sass-loader']}
         ]
     },
